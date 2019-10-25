@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="{{route('category.index')}}">View Cateogories</a>
+                    <a href="{{route('crud.categories.index')}}">View Cateogories</a>
                 </div>
             </div>
         </div>
