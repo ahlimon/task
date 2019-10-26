@@ -96,13 +96,18 @@ class CategoryController extends Controller
       $category->update([
           'name'=>$request->name
         ]);
-      Category::where('parent_id',$category->id)->delete();
       if(isset($request->sub_categories)){
-        foreach($request->sub_categories as $subCategory){
-          Category::create([
-            'name'=>$subCategory,
-            'parent_id'=>$category->id,
-          ]);
+        foreach($request->sub_categories as $key=>$value){
+          $isExist=Category::where('id',$key)->first();
+          if($isExist!=''){
+            $isExist->name=$value;
+            $isExist->save();
+          }else{
+            Category::create([
+              'name'=>$value,
+              'parent_id'=>$category->id,
+            ]);
+          }
         }
       }
       return redirect(route('crud.categories.index'))->with('success','Category and SubCategories are updated successfully');

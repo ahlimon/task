@@ -15,16 +15,17 @@
                           <div class="form-group"  id="subCategory-fields">
                               <label for="emailaddress1">SubCategories</label>
                               @forelse($category->getSubCategories as $subCategory)
-                                <div class="row" id="subCategory-field">
+                                <div class="row">
                                   <input class="form-control col-10 mt-1" name="sub_categories[{{$subCategory->id}}]" type="text" value="{{$subCategory->name}}" placeholder="Write SubCategory name here" required>
                                   <div class="col-2"><button class="btn btn-danger removeSubCategory" type="button">x</button></div>
                                 </div>
                               @empty
+                                <p class="text-danger">No SubCategories added</p>
+                              @endforelse
                               <div class="row" id="subCategory-field">
                                 <input class="form-control col-10 mt-1" name="sub_categories[]" type="text" value="" placeholder="Write SubCategory name here" required>
                                 <div class="col-2"><button class="btn btn-danger removeSubCategory" type="button">x</button></div>
                               </div>
-                              @endforelse
                           </div>
                           <button type="button" id="add-subCategory" class="btn btn-icon btn-info btn-sm"> <i class="mdi mdi-plus"></i> New SubCategory</button>
 
