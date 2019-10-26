@@ -14,8 +14,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories=Category::paginate(5);
+        $categories=Category::whereNull('parent_id')->paginate(5);
         return view('welcome',compact('categories'));
+
     }
 
     /**
@@ -41,12 +42,22 @@ class CategoryController extends Controller
         'name'=>'required|string|max:191'
       ]);
 
-    Category::create([
-        'name'=>$request->name,
-        'sub_categories'=>json_encode($request->sub_categories),
+    $instertedCategory=Category::create([
+        'name'=>$request->name
       ]);
 
-      return back()->with('success','Category and SubCategories are added successfully');
+    if(count($request->sub_categories)>0){
+      foreach($request->sub_categories as $subCategory){
+        if($subCategory!=''){
+          Category::create([
+              'name'=>$subCategory,
+              'parent_id'=>$instertedCategory->id,
+            ]);
+        }
+      }
+    }
+    return back()->with('success','Category and SubCategories are added successfully');
+
     }
 
     /**
@@ -80,11 +91,21 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+      // return $request->all();
+
       $category->update([
-          'name'=>$request->name,
-          'sub_categories'=>json_encode($request->sub_categories),
+          'name'=>$request->name
         ]);
-        return redirect(route('crud.categories.index'))->with('success','Category and SubCategories are updated successfully');
+      Category::where('parent_id',$category->id)->delete();
+      if(isset($request->sub_categories)){
+        foreach($request->sub_categories as $subCategory){
+          Category::create([
+            'name'=>$subCategory,
+            'parent_id'=>$category->id,
+          ]);
+        }
+      }
+      return redirect(route('crud.categories.index'))->with('success','Category and SubCategories are updated successfully');
     }
 
     /**

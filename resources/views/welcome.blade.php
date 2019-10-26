@@ -20,16 +20,18 @@
                         <td>{{$category->name}}</td>
                         <td>
                             <ol>
-                                @if($category->sub_categories!='[null]' && $category->sub_categories!='null') @forelse(json_decode($category->sub_categories) as $subCategory)
-                                <li>{{$subCategory}}</li>
-                                @empty
-                                <li class="text-danger">No Sub-categories found</li>
-                                @endforelse @else
-                                <span class="text-danger">No Sub-categories found</span> @endif
+                                @if(count($category->getSubCategories)>0)
+                                  @foreach($category->getSubCategories as $subCategory)
+                                    <li>{{$subCategory->name}}</li>
+
+                                  @endforeach
+                                @else
+                                  <span class="text-danger">No Sub-categories found</span>
+                                @endif
                             </ol>
                         </td>
                         <td>{{\Carbon\Carbon::parse($category->created_at)->diffForHumans()}}</td>
-                        <td>{{$category->created_at!=''?date('d M, Y',strtotime($category->updated_at)):''}}</td>
+                        <td>{{\Carbon\Carbon::parse($category->updated_at)->diffForHumans()}}</td>
                         <td>{{$category->deleted_at!=''?date('d M, Y',strtotime($category->deleted_at)):''}}</td>
                         <td>
                             <a href="{{ route('crud.categories.edit',$category->id) }}" class="btn btn-icon btn-sm btn-primary action-icon float-left m-1">
@@ -41,7 +43,6 @@
                                     <i class="fa fa-trash text-white"></i>
                                 </button>
                             </form>
-
                         </td>
                     </tr>
                     @empty

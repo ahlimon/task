@@ -16,10 +16,10 @@ class CreateCategoriesTable extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->longtext('sub_categories')->nullable();
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            // $table->foreign('category_id')->references('id')->on('sub_categories')->onDelete('cascade');
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
         });
     }
 
